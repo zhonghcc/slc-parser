@@ -4,7 +4,8 @@
   "description": "slc file fomat paser. conver to other file type",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "node ./index"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/zhonghcc/slc-parser/issues"
   },
-  "homepage": "https://github.com/zhonghcc/slc-parser#readme"
+  "homepage": "https://github.com/zhonghcc/slc-parser#readme",
+  "dependencies": {}
 }
