@@ -2,10 +2,11 @@
   "name": "slc-parser",
   "version": "1.0.0",
   "description": "slc file fomat paser. conver to other file type",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "node ./index"
+    "build": "babel src -d build",
+    "debug": "babel-node ./src/index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,10 @@
   "homepage": "https://github.com/zhonghcc/slc-parser#readme",
   "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
     "axios": "^0.20.0"
   }
 }
