@@ -8,12 +8,18 @@ var model = new SlcModel();
 //     console.log(xhr.response)
 // }
 // xhr.send();
-axios.get('http://zhonghcc.com/5.slc')
+axios.get('http://zhonghcc.com/5.slc',{
+  responseType:'arraybuffer'
+})
   .then(function (response) {
-    console.log(response);
+    // console.log(typeof(response.data));
+    // console.log(Object.keys(response.data));
+    // console.log(response.data[0]);
+    // console.log(response);
+    model.loadFromArray(response.data);
   })
   .catch(function (error) {
     console.log(error);
   });
-model.loadFromFile(1);
-console.log(model);
+// model.loadFromFile(1);
+// console.log(model);
