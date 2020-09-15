@@ -5,6 +5,7 @@ class SlcModel {
         this.step = null;
         this.version = null;
         this.sliceNums = null;
+        this.p = 0;
     }
     loadFromFile(file) {
         this.unit = 'file';
@@ -12,16 +13,23 @@ class SlcModel {
         this.sliceNums = 10;
     }
     loadFromArray(arr){
+        this.p=0;
         this._readHeader(arr);
+        this._readTable(arr);
         console.log(this);
     }
     _readHeader(arr){
-        var i=0;
         var headerStr = "";
-        while(i++<2048){
-            var b = arr[i];
+        while(this.p++<2048){
+            var b = arr[this.p];
             if(b==0x0d){
-                break;
+                if(arr[this.p+1]==0x0a&&arr[this.p+2]==0x1a){
+                    this.p = this.p+3;
+                    break;
+                }else{
+                    console.log("read header error,break file");
+                    return;
+                }
             }
             var c = String.fromCharCode(b);
             headerStr+=c;
@@ -45,6 +53,12 @@ class SlcModel {
                 }
             }
         });
+        //skip space
+        this.p+=256;
+    }
+    _readTable(arr){
+        let size = arr[this.p++];
+        console.log("total entry size=",size);
     }
 }
 
