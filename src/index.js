@@ -1,4 +1,5 @@
 import SlcModel from './slcmodel';
+import SvgConvert from './svgconvert';
 import axios from 'axios';
 var model = new SlcModel();
 // const xhr = new XMLHttpRequest();
@@ -17,6 +18,8 @@ axios.get('http://zhonghcc.com/5.slc',{
     // console.log(response.data[0]);
     // console.log(response);
     model.loadFromArray(response.data);
+    let convert = new SvgConvert(model);
+    convert.convert(0);
   })
   .catch(function (error) {
     console.log(error);
