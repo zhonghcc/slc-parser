@@ -1,5 +1,7 @@
 
 import SlcSampleTable from './slcsampletable'
+import SlcLayer from './slclayer'
+import {SlcBoundary,SlcVertex} from './slcboundary'
 class SlcModel {
     constructor() {
         this.unit = null;
@@ -8,6 +10,7 @@ class SlcModel {
         this.sliceNums = null;
         this.p = 0;
         this.sampleTables = [];
+        this.layers = [];
     }
     loadFromFile(file) {
         this.unit = 'file';
@@ -15,11 +18,14 @@ class SlcModel {
         this.sliceNums = 10;
     }
     loadFromArray(arr){
+        let start = new Date().getTime();
         this.p=0;
         this._readHeader(arr);
         this._readTable(arr);
         this._readData(arr);
+        this.sliceNums = this.layers.length;
         console.log(this);
+        console.log("read model cost:",new Date().getTime()-start);
     }
     _readHeader(arr){
         var headerStr = "";
@@ -72,6 +78,37 @@ class SlcModel {
             console.log(sampleTable);
         }
     }
+    _readData(arr){
+        while(true){
+            let zlayer = this._readFloat(arr);
+            let boundaryNums = this._readInteger(arr);
+            // console.log(zlayer,boundaryNums);
+            if(boundaryNums==0xFFFFFFFF){
+                console.log("get the end of file success return");
+                return;
+            }else{
+                let layer = new SlcLayer(zlayer,boundaryNums);
+                // console.log(layer);
+                for(let i=0;i<boundaryNums;i++){
+                    let boundary = this._readBoundary(arr);
+                    layer.addBoundary(boundary);
+                }
+                this.layers.push(layer);
+            }
+        }
+    }
+    _readBoundary(arr){
+        let nums = this._readInteger(arr);
+        let gaps = this._readInteger(arr);
+        let boundary = new SlcBoundary(nums,gaps);
+        for(let i=0;i<nums;i++){
+            let x = this._readFloat(arr);
+            let y = this._readFloat(arr);
+            let vertex = new SlcVertex(x,y);
+            boundary.addVertex(vertex);
+        }
+        return boundary;
+    }
     _readFloat(arr){
         let len = 4;
         var buf = new ArrayBuffer(len);
@@ -86,8 +123,19 @@ class SlcModel {
         var f = dataview.getFloat32(0,true);
         return f;
     }
-    _readData(arr){
+    _readInteger(arr){
+        let len = 4;
+        var buf = new ArrayBuffer(len);
+        var bufView = new Uint8Array(buf);
+        for(let i=0;i<len;i++){
+            bufView[i]=arr[this.p+i];
+        }
 
+        var dataview = new DataView(buf,0,4);
+        this.p+=4;
+        //little endian
+        var f = dataview.getUint32(0,true);
+        return f;
     }
 }
 
