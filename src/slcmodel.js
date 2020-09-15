@@ -1,4 +1,5 @@
 
+import SlcSampleTable from './slcsampletable'
 class SlcModel {
     constructor() {
         this.unit = null;
@@ -6,6 +7,7 @@ class SlcModel {
         this.version = null;
         this.sliceNums = null;
         this.p = 0;
+        this.sampleTables = [];
     }
     loadFromFile(file) {
         this.unit = 'file';
@@ -16,6 +18,7 @@ class SlcModel {
         this.p=0;
         this._readHeader(arr);
         this._readTable(arr);
+        this._readData(arr);
         console.log(this);
     }
     _readHeader(arr){
@@ -59,6 +62,32 @@ class SlcModel {
     _readTable(arr){
         let size = arr[this.p++];
         console.log("total entry size=",size);
+        for(let i=0;i<size;i++){
+            let zmin = this._readFloat(arr);
+            let thickness = this._readFloat(arr);
+            let linewidth = this._readFloat(arr);
+            this._readFloat(arr);
+            let sampleTable = new SlcSampleTable(zmin,thickness,linewidth);
+            this.sampleTables.push(sampleTable);
+            console.log(sampleTable);
+        }
+    }
+    _readFloat(arr){
+        let len = 4;
+        var buf = new ArrayBuffer(len);
+        var bufView = new Uint8Array(buf);
+        for(let i=0;i<len;i++){
+            bufView[i]=arr[this.p+i];
+        }
+
+        var dataview = new DataView(buf,0,4);
+        this.p+=4;
+        //little endian
+        var f = dataview.getFloat32(0,true);
+        return f;
+    }
+    _readData(arr){
+
     }
 }
 
