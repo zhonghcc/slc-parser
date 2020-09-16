@@ -18,7 +18,7 @@ axios.get('http://zhonghcc.com/5.slc',{
     // console.log(response.data[0]);
     // console.log(response);
     model.loadFromArray(response.data);
-    let convert = new SvgConvert(model);
+    let convert = new SvgConvert(model,'#000000','#FFFFFF');
     convert.convert(0);
   })
   .catch(function (error) {

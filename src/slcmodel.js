@@ -107,6 +107,7 @@ class SlcModel {
             let vertex = new SlcVertex(x,y);
             boundary.addVertex(vertex);
         }
+        boundary.adjustOuter();
         return boundary;
     }
     _readFloat(arr){
