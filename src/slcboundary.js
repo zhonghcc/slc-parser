@@ -4,9 +4,31 @@ class SlcBoundary{
         this.gaps = gaps;
         this.outer = true;
         this.list = [];
+        this.xxyy = [];
     }
     addVertex(vertex){
         this.list.push(vertex);
+    }
+    box(){
+        let first = this.list[0];
+        this.xxyy = [first.x,first.x,first.y,first.y];
+        for(let i=0;i<this.list.length;i++){
+            let cur = this.list[i];
+            let x = cur.x;
+            let y = cur.y;
+            if(x<this.xxyy[0]){
+                this.xxyy[0] = x;
+            }
+            if(x>this.xxyy[1]){
+                this.xxyy[1] = x;
+            }
+            if(y<this.xxyy[2]){
+                this.xxyy[2] = y;
+            }
+            if(y>this.xxyy[3]){
+                this.xxyy[3] = y;
+            }
+        }
     }
     adjustOuter(){
         //get rightmost point
@@ -16,6 +38,7 @@ class SlcBoundary{
         for(let i=0;i<this.list.length;i++){
             let cur = this.list[i];
             let x = cur.x;
+            let y = cur.y;
             if(x>max){
                 right = cur;
                 max = x;

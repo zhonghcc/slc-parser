@@ -11,6 +11,7 @@ class SlcModel {
         this.p = 0;
         this.sampleTables = [];
         this.layers = [];
+        this.xxyy = [];
     }
     loadFromFile(file) {
         this.unit = 'file';
@@ -23,9 +24,29 @@ class SlcModel {
         this._readHeader(arr);
         this._readTable(arr);
         this._readData(arr);
+        this.box();
         this.sliceNums = this.layers.length;
         console.log(this);
         console.log("read model cost:",new Date().getTime()-start);
+    }
+    box(){
+        let first = this.layers[0];
+        this.xxyy = first.xxyy;
+        for(let i=0;i<this.layers.length;i++){
+            let curxxyy = this.layers[i].xxyy;
+            if(curxxyy[0]<this.xxyy[0]){
+                this.xxyy[0] = curxxyy[0];
+            }
+            if(curxxyy[1]>this.xxyy[1]){
+                this.xxyy[1] = curxxyy[1];
+            }
+            if(curxxyy[2]<this.xxyy[2]){
+                this.xxyy[2] = curxxyy[2];
+            }
+            if(curxxyy[3]>this.xxyy[3]){
+                this.xxyy[3] = curxxyy[3];
+            }
+        }
     }
     _readHeader(arr){
         var headerStr = "";
@@ -93,6 +114,7 @@ class SlcModel {
                     let boundary = this._readBoundary(arr);
                     layer.addBoundary(boundary);
                 }
+                layer.box();
                 this.layers.push(layer);
             }
         }
@@ -108,6 +130,7 @@ class SlcModel {
             boundary.addVertex(vertex);
         }
         boundary.adjustOuter();
+        boundary.box();
         return boundary;
     }
     _readFloat(arr){
