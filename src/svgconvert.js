@@ -27,23 +27,33 @@ class SvgConvert{
             ]
         }
         doc.elements.push(svg);
-        let layer = this.model.layers[index];
-        
+        let trans = "";
         let rect = {
             type:"element",
             name:"g",
             attributes:{
+                transform:trans
             },
             elements:[]
         };
         svg.elements.push(rect);
+        let layer = this.model.layers[index];
+        let realheight = layer.xxyy[3]-layer.xxyy[2];
+        let realwidth = layer.xxyy[1]-layer.xxyy[0];
+        let scale = 1;
+        if(realheight/realwidth>this.height/this.width){
+            scale = this.height/realheight;
+        }else{
+            scale = this.width/realwidth;
+        }
+        trans+="rotate("+scale+","+scale+");";
         let boundaries = layer.boundaries;
         for(let i=0;i<boundaries.length;i++){
             let path = "M ";
             let vertexs = boundaries[i].list;
             for(let j=0;j<vertexs.length;j++){
-                path += vertexs[j].x*10+" ";
-                path += vertexs[j].y*10+" ";
+                path += vertexs[j].x+" ";
+                path += vertexs[j].y+" ";
             }
             path+="z";
             let pathelement = {
