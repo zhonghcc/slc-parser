@@ -1,12 +1,21 @@
 import SlcModel from './slcmodel'
 import convert from 'xml-js'
 class SvgConvert{
-    constructor(slcModel,foreground,background,width,height){
+    constructor(slcModel,foreground,background,width,height,pagewidth,pageheight){
         this.model = slcModel;
         this.foreground = foreground;
         this.background = background;
         this.width = width;
         this.height = height;
+        this.pagewidth = pagewidth;
+        this.pageheight = pageheight;
+        this.scale =1;
+        if(this.pageheight/this.pagewidth>this.height/this.width){
+            this.scale = this.height/this.pageheight;
+        }else{
+            this.scale = this.width/this.pagewidth;
+        }
+        this.trans=`translate(${this.width/2},${this.height/2}) scale(${this.scale},${this.scale})`;
     }
     convert(index){
         let svg = {
@@ -28,25 +37,18 @@ class SvgConvert{
         }
         doc.elements.push(svg);
         let trans = "";
+        let layer = this.model.layers[index];
+        // let realheight = layer.xxyy[3]-layer.xxyy[2];
+        // let realwidth = layer.xxyy[1]-layer.xxyy[0];
         let rect = {
             type:"element",
             name:"g",
             attributes:{
-                transform:trans
+                transform:this.trans
             },
             elements:[]
         };
         svg.elements.push(rect);
-        let layer = this.model.layers[index];
-        let realheight = layer.xxyy[3]-layer.xxyy[2];
-        let realwidth = layer.xxyy[1]-layer.xxyy[0];
-        let scale = 1;
-        if(realheight/realwidth>this.height/this.width){
-            scale = this.height/realheight;
-        }else{
-            scale = this.width/realwidth;
-        }
-        trans+="rotate("+scale+","+scale+");";
         let boundaries = layer.boundaries;
         for(let i=0;i<boundaries.length;i++){
             let path = "M ";

@@ -26,7 +26,7 @@ class SlcModel {
         this._readData(arr);
         this.box();
         this.sliceNums = this.layers.length;
-        console.log(this);
+        // console.log(this);
         console.log("read model cost:",new Date().getTime()-start);
     }
     box(){
