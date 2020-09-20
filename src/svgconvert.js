@@ -70,7 +70,7 @@ class SvgConvert{
         }
         let xml = convert.js2xml(doc,{compact:false,fullTagEmptyElement:true});
         // console.log(convert.xml2json(xml,{compact:false}));
-        console.log(xml);
+        return xml;
     }
 }
 
